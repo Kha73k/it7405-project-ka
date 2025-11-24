@@ -1,0 +1,319 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<style>
+    .reviews-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .reviews-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .leave-review-btn {
+        background-color: #ffd700;
+        color: #333;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .leave-review-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        color: #333;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .overall-rating-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .rating-number {
+        font-size: 4rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .stars-large {
+        font-size: 2rem;
+        color: #ffd700;
+    }
+    
+    .rating-count {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .service-rating-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .service-rating-item {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 1.5rem;
+        border-radius: 10px;
+        transition: transform 0.3s;
+    }
+    
+    .service-rating-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .service-rating-item h5 {
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+    }
+    
+    .stars {
+        color: #ffd700;
+        font-size: 1.2rem;
+    }
+    
+    .review-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .review-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .customer-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .review-date {
+        color: #999;
+        font-size: 0.9rem;
+    }
+    
+    .service-badge {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    .review-comment {
+        color: #555;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        border-radius: 5px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        color: #333;
+        margin: 3rem 0 1.5rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #667eea;
+        display: inline-block;
+    }
+    
+    .no-reviews {
+        text-align: center;
+        padding: 3rem;
+        color: #999;
+        font-size: 1.1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .divider {
+        height: 2px;
+        background: linear-gradient(to right, transparent, #667eea, transparent);
+        margin: 3rem 0;
+    }
+</style>
+
+<div class="reviews-header">
+    <h1>⭐ Customer Reviews</h1>
+    <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">See what our customers are saying about us!</p>
+    <a href="{% url 'submit_rating' %}" class="leave-review-btn">
+        <i class="fas fa-star"></i> Leave Your Review
+    </a>
+</div>
+
+<!-- Overall Company Rating Summary -->
+<div class="stats-card">
+    <h3 style="text-align: center; color: #333; margin-bottom: 1.5rem;">Overall Company Rating</h3>
+    {% if overall_avg %}
+        <div class="overall-rating-display">
+            <div class="rating-number">{{ overall_avg|floatformat:1 }}</div>
+            <div>
+                <div class="stars-large">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= overall_avg %}
+                            <i class="fas fa-star"></i>
+                        {% elif forloop.counter <= overall_avg|add:"0.5" %}
+                            <i class="fas fa-star-half-alt"></i>
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="rating-count">Based on {{ overall_count }} review{{ overall_count|pluralize }}</div>
+            </div>
+        </div>
+    {% else %}
+        <p class="no-reviews">No overall ratings yet. Be the first to review!</p>
+    {% endif %}
+</div>
+
+<!-- Service Ratings Summary -->
+<div class="stats-card">
+    <h3 style="text-align: center; color: #333; margin-bottom: 1.5rem;">Service Ratings</h3>
+    <div class="service-rating-grid">
+        {% for service in services_with_ratings %}
+            <div class="service-rating-item">
+                <h5>{{ service.name }}</h5>
+                {% if service.avg_rating %}
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= service.avg_rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <strong>{{ service.avg_rating|floatformat:1 }}</strong>
+                        <span style="color: #666;">({{ service.rating_count }} review{{ service.rating_count|pluralize }})</span>
+                    </div>
+                {% else %}
+                    <p style="color: #999; margin-top: 0.5rem;">No ratings yet</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Overall Company Reviews -->
+<h3 class="section-title">💬 Overall Reviews</h3>
+<div style="margin-top: 2rem;">
+    {% if overall_ratings %}
+        {% for rating in overall_ratings %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div>
+                        <div class="customer-name">{{ rating.customer_name }}</div>
+                        <div class="stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= rating.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="review-date">{{ rating.created_at|date:"F d, Y" }}</div>
+                </div>
+                {% if rating.comment %}
+                    <div class="review-comment">
+                        <i class="fas fa-quote-left" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        {{ rating.comment }}
+                        <i class="fas fa-quote-right" style="color: #667eea; margin-left: 0.5rem;"></i>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-reviews">
+            <i class="far fa-comment-dots" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+            No overall reviews yet. Share your experience with us!
+        </div>
+    {% endif %}
+</div>
+
+<div class="divider"></div>
+
+<!-- Service-Specific Reviews -->
+<h3 class="section-title">🚗 Service Reviews</h3>
+<div style="margin-top: 2rem;">
+    {% if service_ratings %}
+        {% for rating in service_ratings %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div>
+                        <div class="customer-name">{{ rating.customer_name }}</div>
+                        <span class="service-badge">{{ rating.service.name }}</span>
+                        <div class="stars" style="margin-top: 0.5rem;">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= rating.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="review-date">{{ rating.created_at|date:"F d, Y" }}</div>
+                </div>
+                {% if rating.comment %}
+                    <div class="review-comment">
+                        <i class="fas fa-quote-left" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        {{ rating.comment }}
+                        <i class="fas fa-quote-right" style="color: #667eea; margin-left: 0.5rem;"></i>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-reviews">
+            <i class="far fa-comment-dots" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+            No service reviews yet. Tell us about your experience!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

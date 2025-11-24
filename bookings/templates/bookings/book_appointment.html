@@ -1,0 +1,42 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px;">
+    <h2 style="margin-bottom: 1.5rem;">Book: {{ service.name }}</h2>
+    
+    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 2rem;">
+        <p><strong>Service:</strong> {{ service.name }}</p>
+        <p><strong>Duration:</strong> {{ service.duration_minutes }} minutes</p>
+        <p><strong>Price:</strong> ${{ service.price }}</p>
+        <p style="margin-top: 0.5rem;">{{ service.description }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 1rem;">
+            <label for="appointment_date" style="display: block; margin-bottom: 0.5rem;">Date:</label>
+            <input type="date" id="appointment_date" name="appointment_date" required 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label for="appointment_time" style="display: block; margin-bottom: 0.5rem;">Time:</label>
+            <input type="time" id="appointment_time" name="appointment_time" required 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label for="customer_notes" style="display: block; margin-bottom: 0.5rem;">Additional Notes (optional):</label>
+            <textarea id="customer_notes" name="customer_notes" rows="4" 
+                      style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%;">Confirm Booking</button>
+    </form>
+    
+    <a href="{% url 'home' %}" style="display: inline-block; margin-top: 1rem;">← Back to Services</a>
+</div>
+{% endblock %}

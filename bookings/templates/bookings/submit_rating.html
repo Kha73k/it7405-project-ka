@@ -1,0 +1,300 @@
+{% extends 'bookings/base.html' %}
+
+{% block content %}
+<style>
+    .submit-rating-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .submit-rating-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .rating-form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+    }
+    
+    .form-label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .radio-group {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .radio-option {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .radio-option input[type="radio"] {
+        display: none;
+    }
+    
+    .radio-option label {
+        display: block;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .radio-option input[type="radio"]:checked + label {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .radio-option label:hover {
+        border-color: #667eea;
+    }
+    
+    .star-rating {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+    }
+    
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+    
+    .star-rating label {
+        font-size: 3rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .star-rating input[type="radio"]:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffd700;
+    }
+    
+    .star-rating label:hover {
+        transform: scale(1.2);
+    }
+    
+    .star-rating label span {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: white;
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    
+    #service-section {
+        animation: fadeIn 0.5s;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="submit-rating-header">
+    <h1>⭐ Share Your Experience</h1>
+    <p style="font-size: 1.1rem;">Your feedback helps us improve our services</p>
+</div>
+
+<div class="rating-form-card">
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Rating Type -->
+<div class="form-section">
+    <label class="form-label">
+        <i class="fas fa-question-circle"></i> What would you like to rate?
+    </label>
+    <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" name="rating_type" value="service" id="rating_type_service" checked>
+            <label for="rating_type_service">
+                <i class="fas fa-car"></i><br>
+                Specific Service
+            </label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" name="rating_type" value="overall" id="rating_type_overall">
+            <label for="rating_type_overall">
+                <i class="fas fa-building"></i><br>
+                Overall Company
+            </label>
+        </div>
+    </div>
+</div>
+
+        <!-- Service Selection -->
+        <div class="form-section" id="service-section" style="display: none;">
+            <label class="form-label" for="{{ form.service.id_for_label }}">
+                <i class="fas fa-list"></i> Select Service
+            </label>
+            {{ form.service }}
+        </div>
+
+        <!-- Customer Name -->
+        <div class="form-section">
+            <label class="form-label" for="{{ form.customer_name.id_for_label }}">
+                <i class="fas fa-user"></i> Your Name
+            </label>
+            {{ form.customer_name }}
+        </div>
+
+        <!-- Rating Stars -->
+        <div class="form-section">
+            <label class="form-label">
+                <i class="fas fa-star"></i> Your Rating
+            </label>
+            <div class="star-rating">
+                {% for value, label in form.rating.field.choices reversed %}
+                <input type="radio" name="rating" value="{{ value }}" id="rating_{{ value }}">
+                <label for="rating_{{ value }}">
+                    <i class="fas fa-star"></i>
+                    <span>{{ value }} Star{{ value|pluralize }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Comment -->
+        <div class="form-section">
+            <label class="form-label" for="{{ form.comment.id_for_label }}">
+                <i class="fas fa-comment"></i> Your Review <span style="color: #999; font-weight: normal; font-size: 0.9rem;">(Optional)</span>
+            </label>
+            {{ form.comment }}
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Submit Review
+            </button>
+            <a href="{% url 'reviews' %}" class="btn-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ratingTypeInputs = document.querySelectorAll('input[name="rating_type"]');
+        const serviceSection = document.getElementById('service-section');
+        
+        function toggleServiceSection() {
+            const selectedType = document.querySelector('input[name="rating_type"]:checked');
+            if (selectedType && selectedType.value === 'service') {
+                serviceSection.style.display = 'block';
+            } else {
+                serviceSection.style.display = 'none';
+            }
+        }
+        
+        ratingTypeInputs.forEach(input => {
+            input.addEventListener('change', toggleServiceSection);
+        });
+        
+        toggleServiceSection();
+    });
+</script>
+{% endblock %}

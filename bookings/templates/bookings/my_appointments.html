@@ -1,0 +1,73 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}My Appointments{% endblock %}
+
+{% block content %}
+<style>
+    .appointments-container {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .appointment-item {
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+    }
+    .appointment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+    }
+    .appointment-details p {
+        color: #666;
+        margin: 0.5rem 0;
+    }
+    .status-badge {
+        padding: 0.5rem 1rem;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.875rem;
+    }
+    .status-confirmed { background-color: #28a745; }
+    .status-pending { background-color: #ffc107; }
+    .status-completed { background-color: #6c757d; }
+    .status-cancelled { background-color: #dc3545; }
+    .no-appointments {
+        background: white;
+        padding: 3rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+</style>
+
+<h1 style="margin-bottom: 2rem;">My Appointments</h1>
+
+{% if appointments %}
+    <div class="appointments-container">
+        {% for appointment in appointments %}
+        <div class="appointment-item">
+            <div class="appointment-header">
+                <div class="appointment-details">
+                    <h3>{{ appointment.service.name }}</h3>
+                    <p>📅 {{ appointment.appointment_date }} at {{ appointment.appointment_time }}</p>
+                    <p>💰 ${{ appointment.service.price }}</p>
+                    {% if appointment.customer_notes %}
+                        <p style="margin-top: 0.5rem;"><strong>Notes:</strong> {{ appointment.customer_notes }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <span class="status-badge status-{{ appointment.status }}">
+                        {{ appointment.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-appointments">
+        <p style="font-size: 1.25rem; color: #666;">You don't have any appointments yet.</p>
+        <a href="{% url 'home' %}" class="btn" style="margin-top: 1rem;">Browse Services</a>
+    </div>
+{% endif %}
+{% endblock %}

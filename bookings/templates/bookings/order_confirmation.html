@@ -1,0 +1,342 @@
+{% extends 'bookings/base.html' %}
+
+{% block title %}Order Confirmed{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-card">
+        <div class="success-icon">✅</div>
+        <h2>Order Confirmed!</h2>
+        <p class="confirmation-message">Thank you for your order! A delivery rider is on their way.</p>
+        
+        <div class="order-details">
+            <h3>Order Details</h3>
+            
+            <div class="detail-row">
+                <span class="detail-label">Order Number:</span>
+                <span class="detail-value order-number">{{ order.order_number }}</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Total Amount:</span>
+                <span class="detail-value total-amount">{{ total_amount }} BHD</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="detail-label">Payment Method:</span>
+                <span class="detail-value">{{ order.get_payment_method_display }}</span>
+            </div>
+        </div>
+        
+        <div class="delivery-info">
+            <h3>Delivery Address</h3>
+            <p class="address">{{ order.get_full_address }}</p>
+            {% if order.additional_directions %}
+            <p class="directions"><strong>Directions:</strong> {{ order.additional_directions }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="contact-info">
+            <h3>Contact Information</h3>
+            <p><strong>Name:</strong> {{ order.customer_name }}</p>
+            <p><strong>Phone:</strong> {{ order.customer_phone }}</p>
+            {% if order.customer_email %}
+            <p><strong>Email:</strong> {{ order.customer_email }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="order-items">
+            <h3>Items Ordered</h3>
+            {% for item in order_items %}
+            <div class="order-item">
+                <div class="item-info">
+                    <span class="item-name">{{ item.product_name }}</span>
+                    <span class="item-qty">Quantity: {{ item.quantity }}</span>
+                </div>
+                <span class="item-price">{{ item.subtotal }} BHD</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="delivery-status">
+            <div class="status-badge">
+                <span class="status-icon">🚗</span>
+                <span class="status-text">Rider on the way!</span>
+            </div>
+            <p class="status-description">
+                Our delivery rider will arrive shortly with your order. 
+                Please keep your phone nearby and have the payment ready.
+            </p>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{% url 'shop' %}" class="btn-primary">Continue Shopping</a>
+            <a href="{% url 'home' %}" class="btn-secondary">Back to Home</a>
+        </div>
+        
+        <div class="help-section">
+            <p class="help-text">
+                📞 Need help? Contact us at: <strong>+973 3312 3456</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.confirmation-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.confirmation-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.confirmation-card h2 {
+    color: #28a745;
+    font-size: 32px;
+    margin: 0 0 15px 0;
+}
+
+.confirmation-message {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.order-details,
+.delivery-info,
+.contact-info,
+.order-items {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.order-details h3,
+.delivery-info h3,
+.contact-info h3,
+.order-items h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 8px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #666;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.order-number {
+    color: #007bff;
+    font-size: 18px;
+}
+
+.total-amount {
+    color: #28a745;
+    font-size: 20px;
+}
+
+.address {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.directions {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #dee2e6;
+    color: #666;
+    font-size: 14px;
+}
+
+.contact-info p {
+    margin: 8px 0;
+    color: #333;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.item-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.item-qty {
+    font-size: 14px;
+    color: #666;
+}
+
+.item-price {
+    font-weight: 600;
+    color: #28a745;
+}
+
+.delivery-status {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 25px;
+    margin: 30px 0;
+}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.status-icon {
+    font-size: 40px;
+    animation: drive 2s infinite;
+}
+
+@keyframes drive {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+}
+
+.status-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.status-description {
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons .btn-primary,
+.action-buttons .btn-secondary {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.help-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #dee2e6;
+}
+
+.help-text {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .confirmation-card {
+        padding: 20px;
+    }
+    
+    .confirmation-card h2 {
+        font-size: 24px;
+    }
+    
+    .success-icon {
+        font-size: 60px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+window.scrollTo(0, 0);
+</script>
+{% endblock %}
