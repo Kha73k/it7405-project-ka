@@ -78,26 +78,11 @@ To export a collection in MongoDB Compass:
 To import:
 • Create database → Create collection → Import JSON
 
-Folder Structure
-basic
-project/
-│ manage.py
-│ requirements.txt
-│ README.md
-│
-├── bookings/
-│   ├── models.py
-│   ├── views.py
-│   ├── forms.py
-│   ├── urls.py
-│   ├── templates/
-│   └── static/
-│
-└── car_polish_db (MongoDB)
 
 Notes for Tutor / Marker
 • The version uploaded to GitHub is the fully working version.
 • All database conflicts involving rating IDs have been resolved.
 • The system now cleanly accepts new ratings without errors.
 • The application runs successfully on both Windows and laptop environments.
+
 
