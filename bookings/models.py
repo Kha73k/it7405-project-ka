@@ -45,7 +45,7 @@ class Rating(models.Model):
         ('overall', 'Overall Company'),
         ('service', 'Specific Service'),
     ]
-    
+    id = models.IntegerField(primary_key=True)
     rating_type = models.CharField(max_length=20, choices=RATING_TYPE_CHOICES)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=True)
     customer_name = models.CharField(max_length=100)
